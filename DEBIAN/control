@@ -1,0 +1,15 @@
+Package: stone
+Source: empathy
+Version: 1.0.0
+Architecture: amd64
+Maintainer: Dali Wang <wangdali@qq.com>
+Installed-Size: 73728
+Depends: 
+Breaks: 
+Replaces: 
+Section: gnome
+Priority: optional
+Homepage: http://dalistudio.net
+Description: Stone Factory Management System Server
+
+

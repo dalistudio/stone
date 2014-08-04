@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# 删除用户组
+groupdel nobody
+
+# 添加用户组
+groupadd nobody
+
+# 自动启动段开始
+if [ -x "/etc/init.d/taotie" ]; then
+	chmod +x /etc/init.d/taotie
+	update-rc.d taotie defaults >/dev/null
+fi
+
+if [ -x "/etc/init.d/bixi" ]; then
+	chmod +x /etc/init.d/bixi
+	update-rc.d bixi defaults >/dev/null
+fi
+
+if [ -x "/etc/init.d/sms" ]; then
+	chmod +x /etc/init.d/sms
+	update-rc.d sms defaults >/dev/null
+fi
+
+if [ -x "/etc/init.d/keepalived" ] || [ -e "/etc/init/keepalived.conf" ]; then
+	if [ ! -e "/etc/init/keepalived.conf" ]; then
+		update-rc.d keepalived defaults >/dev/null
+	fi
+	invoke-rc.d keepalived start || exit $?
+fi
+
+if [ -x "/etc/init.d/ipvsadm" ]; then
+	if [ ! -e "/etc/init/ipvsadm.conf" ]; then
+		update-rc.d ipvsadm defaults >/dev/null
+	fi
+	invoke-rc.d ipvsadm start || exit $?
+fi
+# 自动启动段结束

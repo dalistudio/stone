@@ -1,0 +1,152 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:          bixi
+# Required-Start:    $remote_fs $network
+# Required-Stop:     $remote_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts bixi
+# Description:       starts bixi daemon
+### END INIT INFO
+
+prefix=/opt/loong
+exec_prefix=${prefix}
+
+bixi_BIN=/opt/loong/bin/bixi
+bixi_CONF=${prefix}/etc/bixi.conf
+bixi_PID=${prefix}/var/run/bixi.pid
+
+
+php_opts="--fpm-config $bixi_CONF --pid $bixi_PID"
+
+
+wait_for_pid () {
+	try=0
+
+	while test $try -lt 35 ; do
+
+		case "$1" in
+			'created')
+			if [ -f "$2" ] ; then
+				try=''
+				break
+			fi
+			;;
+
+			'removed')
+			if [ ! -f "$2" ] ; then
+				try=''
+				break
+			fi
+			;;
+		esac
+
+		echo -n .
+		try=`expr $try + 1`
+		sleep 1
+
+	done
+
+}
+
+case "$1" in
+	start)
+		echo -n "Starting bixi "
+
+		$bixi_BIN --daemonize $php_opts
+
+		if [ "$?" != 0 ] ; then
+			echo " failed"
+			exit 1
+		fi
+
+		wait_for_pid created $bixi_PID
+
+		if [ -n "$try" ] ; then
+			echo " failed"
+			exit 1
+		else
+			echo " done"
+		fi
+	;;
+
+	stop)
+		echo -n "Gracefully shutting down bixi "
+
+		if [ ! -r $bixi_PID ] ; then
+			echo "warning, no pid file found - bixi is not running ?"
+			exit 1
+		fi
+
+		kill -QUIT `cat $bixi_PID`
+
+		wait_for_pid removed $bixi_PID
+
+		if [ -n "$try" ] ; then
+			echo " failed. Use force-quit"
+			exit 1
+		else
+			echo " done"
+		fi
+	;;
+
+	status)
+		if [ ! -r $bixi_PID ] ; then
+			echo "bixi is stopped"
+			exit 0
+		fi
+
+		PID=`cat $bixi_PID`
+		if ps -p $PID | grep -q $PID; then
+			echo "bixi (pid $PID) is running..."
+		else
+			echo "bixi dead but pid file exists"
+		fi
+	;;
+
+	force-quit)
+		echo -n "Terminating bixi "
+
+		if [ ! -r $bixi_PID ] ; then
+			echo "warning, no pid file found - bixi is not running ?"
+			exit 1
+		fi
+
+		kill -TERM `cat $bixi_PID`
+
+		wait_for_pid removed $bixi_PID
+
+		if [ -n "$try" ] ; then
+			echo " failed"
+			exit 1
+		else
+			echo " done"
+		fi
+	;;
+
+	restart)
+		$0 stop
+		$0 start
+	;;
+
+	reload)
+
+		echo -n "Reload service bixi "
+
+		if [ ! -r $bixi_PID ] ; then
+			echo "warning, no pid file found - bixi is not running ?"
+			exit 1
+		fi
+
+		kill -USR2 `cat $bixi_PID`
+
+		echo " done"
+	;;
+
+	*)
+		echo "Usage: $0 {start|stop|force-quit|restart|reload|status}"
+		exit 1
+	;;
+
+esac

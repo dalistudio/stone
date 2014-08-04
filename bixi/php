@@ -1,0 +1,80 @@
+缺少的库 
+1、libxml2
+   $sudo apt-get install libxml2-dev
+
+2、openssl-dev
+   $sudo apt-get install libssl-dev
+
+3、Bzip-dev
+   $sudo apt-get install libzip-dev
+
+4、bzip2-dev
+   $sudo apt-get install libbz2-dev
+
+5、Curl-dev
+   $sudo apt-get install libcurl4-gnutls-dev
+
+6、jpeg-dev
+   $sudo apt-get install libjpeg-dev
+
+7、libpng-dev 
+   $sudo apt-get install libpng-dev
+
+8、libmcrypt
+   $sudo apt-get install libmcrypt-dev
+
+9、libxpm
+   $sudo apt-get install libxpm-dev 
+
+10、libfreetype
+   $sudo apt-get install libfreetype6-dev
+
+11、t1lib
+   $sudo apt-get install libt1-dev 
+
+12、MySQL client
+   $sudo apt-get install libmysql++-dev 
+
+13、xslt-config
+   $sudo apt-get install libxslt1-dev 
+
+./configure \
+--prefix=/opt/loong \
+--sbindir=/opt/loong/bin \
+--with-config-file-path=/opt/loong/etc \
+--with-mcrypt=/usr/local/libmcrypt \
+--with-zlib \
+--with-openssl \
+--with-mysql \
+--with-mysqli \
+--with-mysql-sock \
+--with-gd \
+--with-jpeg-dir=/usr/lib \
+--with-gettext \
+--with-curl \
+--with-pdo-mysql \
+--with-bz2 \
+--enable-sockets \
+--enable-bcmath \
+--enable-xml \
+--enable-zip \
+--enable-fpm \
+--enable-mbstring \
+--enable-gd-native-ttf \
+--enable-pdo
+
+sudo ./bixi -p /opt/loong
+
+需要 nobody 用户组 
+$sudo groupadd nobody
+
+修改的源代码： 
+1、修改php.ini名字
+main\php_ini.c 第 579 行，屏蔽，并修改php.ini为bixi.ini
+
+2、修改php-fpm.conf名字
+sapi\fpm\fpm\fpm_conf.c 
+第 1641 行和第 1644 行屏蔽，修改php-fpm.conf为bixi.conf
+
+
+

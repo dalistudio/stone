@@ -1,0 +1,9 @@
+#! /bin/sh
+#
+# Created by configure
+
+'./configure' \
+'--enable-memcache=/opt/loong/bin/jiaotu' \
+'--with-php-config=/opt/loong/bin/php-config' \
+'--with-apxs2=/usr/sbin/apxs' \
+"$@"

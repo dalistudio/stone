@@ -1,0 +1,61 @@
+nginx-1.4.5
+
+
+缺少的库：
+1、pcre库
+   $sudo apt-get install libpcre3-dev
+
+2、openssl库
+   $sudo apt-get install libssl-dev openssl
+   (会安装zlib1g-dev)
+ 
+
+3、zlib库
+   $sudo apt-get install zlib1g-dev
+
+4、lua5.1库
+   $sudo apt-get install lua5.1-dev lua5.1
+	或
+   $sudo apt-get install libluajit-5.1-dev
+
+编译：
+1、检查环境并配置
+   $./configure
+./configure \
+--user=loong \
+--group=loong \
+--prefix=/opt/loong \
+--conf-path=etc/taotie.conf \
+--error-log-path=log/error.log \
+--http-log-path=log/access.log \
+--pid-path=var/run/taotie.pid \
+--http-client-body-temp-path=/tmp/client_body_temp \
+--http-proxy-temp-path=/tmp/proxy_temp \
+--http-fastcgi-temp-path=/tmp/fastcgi_temp \
+--http-uwsgi-temp-path=/tmp/uwsgi_temp \
+--http-scgi-temp-path=/tmp/scgi_temp \
+--add-module=../mod/ndk \
+--add-module=../mod/echo \
+--add-module=../mod/headers \
+--add-module=../mod/array \
+--add-module=../mod/misc \
+--add-module=../mod/memc \
+--add-module=../mod/nck \
+--add-module=../mod/srcache \
+--add-module=../mod/form
+
+2、编译
+   $make
+
+3、安装
+   $sudo make install
+ 
+4、配置 
+
+5、修改
+src/os/unix/ngx_setproctitle.c 第 92 行和第 93 行，修改 nginx: 为taotie:
+这样进程名字就改为taotie了。
+
+
+
+

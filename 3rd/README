@@ -1,0 +1,4 @@
+libjpeg-turbo8_1.3.0-0ubuntu2_amd64.deb
+libmcrypt4_2.5.8-3.1ubuntu1_amd64.deb
+这两个文件是bixi程序需要的，把它解包到release中。
+方便打包成stone.deb，安装的时候一起装了。
